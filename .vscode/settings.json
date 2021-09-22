@@ -1,0 +1,70 @@
+{
+	"editor.tabSize": 2,
+	"javascript.referencesCodeLens.enabled": true,
+	"editor.renderWhitespace": "all",
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[less]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"tslint.jsEnable": true,
+	"[html]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"explorer.confirmDragAndDrop": false,
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[jsonc]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[json]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"editor.tabCompletion": "on",
+	"prettier.singleQuote": true,
+	"prettier.tabWidth": 2,
+	"editor.detectIndentation": false,
+	"css.lint.duplicateProperties": "warning",
+	"editor.insertSpaces": false,
+	"search.followSymlinks": false,
+
+	"window.zoomLevel": 0,
+	"git.ignoreMissingGitWarning": true,
+	"editor.suggestSelection": "first",
+
+	"files.associations": {
+		"*.cjson": "jsonc",
+		"*.wxss": "css",
+		"*.wxs": "javascript"
+	},
+	"emmet.syntaxProfiles": {
+		"vue-html": "html",
+		"vue": "html"
+	},
+	"emmet.includeLanguages": {
+		"wxml": "html",
+		"javascript": "javascriptreact",
+		"vue-html": "html",
+		"vue": "html",
+		"plaintext": "jade"
+	},
+	"emmet.triggerExpansionOnTab": true,
+	"emmet.showSuggestionsAsSnippets": true,
+	"editor.snippetSuggestions": "top",
+	"emmet.showExpandedAbbreviation": "inMarkupAndStylesheetFilesOnly",
+	"diffEditor.renderSideBySide": false,
+	"javascript.updateImportsOnFileMove.enabled": "always",
+	"javascript.implicitProjectConfig.experimentalDecorators": true,
+	"tslint.ignoreDefinitionFiles": true,
+	"typescript.updateImportsOnFileMove.enabled": "always",
+	"eslint.codeAction.showDocumentation": {
+		"enable": true
+	},
+	"editor.codeActionsOnSave": {
+		"source.fixAll": true
+	},
+	"editor.formatOnSave": true,
+	"editor.formatOnSaveMode": "modifications"
+}
