@@ -56,14 +56,9 @@
 	"emmet.showExpandedAbbreviation": "inMarkupAndStylesheetFilesOnly",
 	"diffEditor.renderSideBySide": false,
 	"javascript.updateImportsOnFileMove.enabled": "always",
-	"javascript.implicitProjectConfig.experimentalDecorators": true,
-	"tslint.ignoreDefinitionFiles": true,
 	"typescript.updateImportsOnFileMove.enabled": "always",
 	"eslint.codeAction.showDocumentation": {
 		"enable": true
-	},
-	"editor.codeActionsOnSave": {
-		"source.fixAll": true
 	},
 	"editor.formatOnSave": true,
 	"editor.formatOnSaveMode": "modifications"

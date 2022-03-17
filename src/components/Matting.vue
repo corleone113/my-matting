@@ -1,23 +1,180 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-const isMatting = ref(false)
+import { useMatting, useMattingBoard } from '@/composables/use-matting'
+import useMattingCursor from '@/composables/use-matting-cursor';
+import { RADIUS_SLIDER_MIN, RADIUS_SLIDER_MAX, RADIUS_SLIDER_STEP, HARDNESS_SLIDER_MAX, HARDNESS_SLIDER_STEP, HARDNESS_SLIDER_MIN, EventType } from '@/constants'
+import { watch, ref, onMounted, Ref, onUnmounted, computed } from 'vue'
+import { generateResultImageURL, resizeCanvas, transformedDrawImage } from '@/helpers/dom-helper'
+
+const inputCvs: Ref<null | HTMLCanvasElement> = ref(null);
+const outputCvs: Ref<null | HTMLCanvasElement> = ref(null);
+const resultURL: Ref<string> = ref('')
+const resultLink: Ref<null | HTMLAnchorElement> = ref(null)
+const generating: Ref<boolean> = ref(false)
+const {
+	picFile,
+	isMatting,
+	radius,
+	hardness,
+	brushSize,
+	hardnessText,
+} = useMatting()
+const {
+	width,
+	height,
+	inputCtx,
+	outputCtx,
+	inputHiddenCtx,
+	outputHiddenCtx,
+	draggingInputBoard,
+	transformConfig,
+	initialized,
+	mattingSources
+}
+	= useMattingBoard({ picFile, isMatting, radius, hardness })
+
+const { cursorImage, mattingCursorStyle, renderOutputCursor } = useMattingCursor({ inputCtx, isDragging: draggingInputBoard, isMatting, radius, hardness });
+const onFileChange = (ev: Event) => {
+	const { files } = (ev.target as HTMLInputElement)
+	if (files && files.length > 0) {
+		picFile.value = files[0]
+	}
+}
+const downloadFileName = computed(() => picFile.value ? `matting_${picFile.value.name}` : 'null')
+const saveBtnClass = computed(() => ({ 'save-btn': true, 'is-saving': generating.value }))
+const saveBtnText = computed(() => generating.value ? '保存中...' : '保存')
+
+
+watch([transformConfig], async () => {
+	if (initialized.value) {
+		redraw()
+	}
+})
+
+watch([initialized], async () => {
+	if (initialized.value) {
+		onResizeBoard()
+	}
+})
+
+
+onMounted(() => {
+	initContextsAndSize()
+	window.addEventListener(EventType.Resize, onResizeBoard)
+	renderOutputCursor();
+})
+
+onUnmounted(() => {
+	window.removeEventListener(EventType.Resize, onResizeBoard)
+})
+
+function initContextsAndSize() {
+	const inputCanvas = inputCvs.value as HTMLCanvasElement
+	const outputCanvas = outputCvs.value as HTMLCanvasElement
+	inputCtx.value = inputCanvas.getContext('2d')
+	outputCtx.value = outputCanvas.getContext('2d')
+	const { clientWidth, clientHeight } = inputCanvas
+	width.value = clientWidth
+	height.value = clientHeight
+}
+
+function onResizeBoard() {
+	requestAnimationFrame(() => {
+		const commonConfig = { targetHeight: height.value, targetWidth: width.value, transformConfig }
+		resizeCanvas({
+			ctx: inputCtx.value as CanvasRenderingContext2D,
+			hiddenCtx: inputHiddenCtx.value,
+			...commonConfig,
+		});
+		resizeCanvas({
+			ctx: outputCtx.value as CanvasRenderingContext2D,
+			hiddenCtx: outputHiddenCtx.value,
+			withBorder: true,
+			...commonConfig,
+		});
+	})
+}
+
+function redraw() {
+	const { positionRange, scaleRatio } = transformConfig;
+	const commonConfig = { positionRange, scaleRatio };
+	transformedDrawImage({
+		ctx: inputCtx.value as CanvasRenderingContext2D,
+		hiddenCtx: inputHiddenCtx.value,
+		...commonConfig,
+	});
+	transformedDrawImage({
+		ctx: outputCtx.value as CanvasRenderingContext2D,
+		hiddenCtx: outputHiddenCtx.value,
+		withBorder: true,
+		...commonConfig,
+	});
+}
+
+function onDownloadResult() {
+	if (mattingSources.value && !generating.value) {
+		generating.value = true
+		generateResultImageURL(mattingSources.value.orig, outputHiddenCtx.value, (url) => {
+			generating.value = false
+			resultURL.value = url
+			setTimeout(() => {
+				resultLink.value?.click()
+			})
+		})
+	}
+}
 </script>
 <template>
 	<div class="options-container">
 		<div class="option">
+			<label for="image">选择图片：</label>
+			<input id="image" type="file" @change="onFileChange" />
+		</div>
+		<div class="option">
 			<span>画笔类型：</span>
 			<label for="fix">修补</label>
-			<input id="fix" name="pen" type="radio" :value="false" v-model="isMatting" />
+			<input id="fix" type="radio" :value="false" v-model="isMatting" />
 			<label for="matting">擦除</label>
-			<input id="matting" name="pen" :value="true" type="radio" v-model="isMatting" />
-			{{ isMatting }}
+			<input id="matting" :value="true" type="radio" v-model="isMatting" />
 		</div>
-		<div class="option"></div>
+		<div class="option">
+			<label for="radius">画笔尺寸：</label>
+			<input
+				id="radius"
+				class="range-input"
+				type="range"
+				v-model="radius"
+				:max="RADIUS_SLIDER_MAX"
+				:min="RADIUS_SLIDER_MIN"
+				:step="RADIUS_SLIDER_STEP"
+			/>
+			<span>{{ brushSize }}</span>
+		</div>
+		<div class="option">
+			<label for="hardness">画笔硬度：</label>
+			<input
+				id="hardness"
+				class="range-input"
+				type="range"
+				v-model="hardness"
+				:max="HARDNESS_SLIDER_MAX"
+				:min="HARDNESS_SLIDER_MIN"
+				:step="HARDNESS_SLIDER_STEP"
+			/>
+			<span>{{ hardnessText }}</span>
+		</div>
+		<button :class="saveBtnClass" @click="onDownloadResult" :disabled="generating">{{ saveBtnText }}</button>
 	</div>
 	<div class="board-container">
-		<canvas class="matting-board"></canvas>
-		<canvas class="result-board"></canvas>
+		<div class="matting-wrapper">
+			<canvas class="matting-board" ref="inputCvs"></canvas>
+			<img class="matting-cursor" :style="mattingCursorStyle" :src="cursorImage" ref="inputCursor" />
+		</div>
+		<div class="matting-wrapper">
+			<canvas class="result-board" ref="outputCvs"></canvas>
+			<img class="matting-cursor" :style="mattingCursorStyle" :src="cursorImage" />
+		</div>
 	</div>
+	<a :href="resultURL" :download="downloadFileName" ref="resultLink"></a>
 </template>
 <style lang="less" scoped>
 .options-container {
@@ -27,7 +184,30 @@ const isMatting = ref(false)
 	align-items: center;
 
 	.option {
-		margin-right: 10px;
+		display: flex;
+		align-items: center;
+		padding: 0 10px;
+		height: 100%;
+
+		&:not(:last-child) {
+			border-right: 1px solid #e3e7e9;
+		}
+
+		.range-input {
+			position: relative;
+			top: 2px;
+		}
+	}
+
+	.save-btn {
+		position: absolute;
+		right: 20px;
+		font-size: 16px;
+		cursor: pointer;
+
+		&.is-saving {
+			cursor: not-allowed;
+		}
 	}
 }
 .board-container {
@@ -42,7 +222,7 @@ const isMatting = ref(false)
 	.matting-board,
 	.result-board {
 		flex: 1 50%;
-		border: 1px solid #886363;
+		border: 1px solid #c3c7c9;
 		background: #e3e7e9;
 		background-image: linear-gradient(45deg, #f6fafc 25%, transparent 0),
 			linear-gradient(45deg, transparent 75%, #f6fafc 0),
@@ -50,6 +230,37 @@ const isMatting = ref(false)
 			linear-gradient(45deg, transparent 75%, #f6fafc 0);
 		background-position: 0 0, 12px 12px, 12px 12px, 24px 24px;
 		background-size: 24px 24px;
+	}
+
+	.matting-wrapper {
+		position: relative;
+		flex: 1 1;
+	}
+
+	.matting-board,
+	.result-board {
+		width: 100%;
+		height: 100%;
+	}
+
+	.matting-board {
+		cursor: none;
+	}
+
+	.result-board {
+		cursor: grab;
+	}
+	.matting-cursor {
+		/** 穿透画笔，触发画布点击事件 */
+		pointer-events: none;
+		display: none;
+		position: absolute;
+		left: -9999px;
+		top: -9999px;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
 	}
 }
 </style>

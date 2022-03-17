@@ -7,9 +7,11 @@
 		"serve": "vite preview"
 	},
 	"dependencies": {
+		"lodash": "^4.17.21",
 		"vue": "^3.2.6"
 	},
 	"devDependencies": {
+		"@types/lodash": "^4.14.179",
 		"@types/node": "^16.9.6",
 		"@vitejs/plugin-vue": "^1.6.1",
 		"@vue/compiler-sfc": "^3.2.6",
