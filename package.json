@@ -1,28 +1,34 @@
 {
-	"name": "matting",
-	"version": "0.0.0",
-	"scripts": {
-		"dev": "vite --host",
-		"build": "vue-tsc --noEmit && vite build",
-		"serve": "vite preview"
-	},
-	"dependencies": {
-		"lodash": "^4.17.21",
-		"vue": "^3.2.6"
-	},
-	"devDependencies": {
-		"@types/lodash": "^4.14.179",
-		"@types/node": "^16.9.6",
-		"@vitejs/plugin-vue": "^1.6.1",
-		"@vue/compiler-sfc": "^3.2.6",
-		"@vue/eslint-config-prettier": "^6.0.0",
-		"eslint": "^7.32.0",
-		"eslint-plugin-prettier": "^4.0.0",
-		"eslint-plugin-vue": "^7.18.0",
-		"less": "^4.1.1",
-		"prettier": "^2.4.1",
-		"typescript": "^4.3.2",
-		"vite": "^2.5.4",
-		"vue-tsc": "^0.2.2"
-	}
+  "name": "matting",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vue-tsc --noEmit && vite build",
+    "serve": "vite preview",
+    "test": "jest"
+  },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "vue": "^3.2.6"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.4.1",
+    "@types/lodash": "^4.14.179",
+    "@types/node": "^16.9.6",
+    "@vitejs/plugin-vue": "^1.6.1",
+    "@vue/compiler-sfc": "^3.2.6",
+    "@vue/eslint-config-prettier": "^6.0.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-vue": "^7.18.0",
+    "jest": "^27.5.1",
+    "jest-canvas-mock": "^2.3.1",
+    "less": "^4.1.1",
+    "prettier": "^2.4.1",
+    "ts-jest": "^27.1.3",
+    "ts-node": "^10.7.0",
+    "typescript": "^4.3.2",
+    "vite": "^2.5.4",
+    "vue-tsc": "^0.2.2"
+  }
 }

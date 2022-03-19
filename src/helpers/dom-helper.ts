@@ -45,7 +45,7 @@ export function createContext2D(createConfig: CreateContext2DConfig = {}): Canva
 		canvas.height = targetSize.height;
 	}
 	if (cloneCanvas) {
-		copyImageInCanvas(context2D, cloneCanvas);
+		domHelpers.copyImageInCanvas(context2D, cloneCanvas);
 	}
 	return context2D;
 }
@@ -222,3 +222,7 @@ function drawResultImageInContext2D(
 	ctx.globalCompositeOperation = GLOBAL_COMPOSITE_OPERATION_DESTINATION_IN;
 	ctx.drawImage(resultImageCtx.canvas, 0, 0, imageSource.width, imageSource.height);
 }
+
+export const domHelpers = {
+	copyImageInCanvas,
+};
