@@ -13,7 +13,7 @@ import {
 /** 抠图画板配置 */
 export interface MattingProps {
 	picFile: Ref<File | null>;
-	isMatting: Ref<boolean>;
+	isErasing: Ref<boolean>;
 	radius: Ref<number>;
 	hardness: Ref<number>;
 }

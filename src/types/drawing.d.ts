@@ -2,15 +2,11 @@ import { BoardDrawingContexts, MouseMovements, PixelPosition, PositionRange } fr
 import { BrushDrawingBaseConfig } from './drawing-listeners';
 
 /** 抠图绘制的配置对象 */
-export interface MattingDrawingConfig
-	extends MouseMovements,
-		BrushDrawingBaseConfig,
-		BoardDrawingContexts,
-		PixelPosition {
+export interface MattingDrawingConfig extends MouseMovements, BrushDrawingBaseConfig, BoardDrawingContexts, PixelPosition {
 	stepBase: number;
 	mattingSource: ImageBitmap;
 	/** 是否为擦除画笔 */
-	isMatting?: boolean;
+	isErasing?: boolean;
 }
 
 export interface ComputedMovements {

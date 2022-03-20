@@ -12,7 +12,7 @@ const resultLink: Ref<null | HTMLAnchorElement> = ref(null)
 const generating: Ref<boolean> = ref(false)
 const {
 	picFile,
-	isMatting,
+	isErasing,
 	radius,
 	hardness,
 	brushSize,
@@ -30,9 +30,9 @@ const {
 	initialized,
 	mattingSources
 }
-	= useMattingBoard({ picFile, isMatting, radius, hardness })
+	= useMattingBoard({ picFile, isErasing, radius, hardness })
 
-const { cursorImage, mattingCursorStyle, renderOutputCursor } = useMattingCursor({ inputCtx, isDragging: draggingInputBoard, isMatting, radius, hardness });
+const { cursorImage, mattingCursorStyle, renderOutputCursor } = useMattingCursor({ inputCtx, isDragging: draggingInputBoard, isErasing, radius, hardness });
 const onFileChange = (ev: Event) => {
 	const { files } = (ev.target as HTMLInputElement)
 	if (files && files.length > 0) {
@@ -40,7 +40,8 @@ const onFileChange = (ev: Event) => {
 	}
 }
 const downloadFileName = computed(() => picFile.value ? `matting_${picFile.value.name}` : 'null')
-const saveBtnClass = computed(() => ({ 'save-btn': true, 'is-saving': generating.value }))
+const cantSave = computed(()=>generating.value || !initialized.value)
+const saveBtnClass = computed(() => ({ 'save-btn': true, 'disabled': cantSave.value }))
 const saveBtnText = computed(() => generating.value ? '保存中...' : '保存')
 
 
@@ -132,9 +133,9 @@ function onDownloadResult() {
 		<div class="option">
 			<span>画笔类型：</span>
 			<label for="fix">修补</label>
-			<input id="fix" type="radio" :value="false" v-model="isMatting" />
+			<input id="fix" type="radio" :value="false" v-model="isErasing" />
 			<label for="matting">擦除</label>
-			<input id="matting" :value="true" type="radio" v-model="isMatting" />
+			<input id="matting" :value="true" type="radio" v-model="isErasing" />
 		</div>
 		<div class="option">
 			<label for="radius">画笔尺寸：</label>
@@ -162,7 +163,7 @@ function onDownloadResult() {
 			/>
 			<span>{{ hardnessText }}</span>
 		</div>
-		<button :class="saveBtnClass" @click="onDownloadResult" :disabled="generating">{{ saveBtnText }}</button>
+		<button :class="saveBtnClass" @click="onDownloadResult" :disabled="cantSave">{{ saveBtnText }}</button>
 	</div>
 	<div class="board-container">
 		<div class="matting-wrapper">
@@ -205,7 +206,7 @@ function onDownloadResult() {
 		font-size: 16px;
 		cursor: pointer;
 
-		&.is-saving {
+		&.disabled {
 			cursor: not-allowed;
 		}
 	}

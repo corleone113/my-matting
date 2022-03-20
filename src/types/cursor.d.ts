@@ -13,7 +13,7 @@ export interface CursorStyle {
 export interface UseCursorConfig {
 	inputCtx: Ref<CanvasRenderingContext2D | null>;
 	isDragging: Ref<boolean>;
-	isMatting: Ref<boolean>;
+	isErasing: Ref<boolean>;
 	radius: Ref<number>;
 	hardness: Ref<number>;
 }

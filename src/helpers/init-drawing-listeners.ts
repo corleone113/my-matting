@@ -97,9 +97,9 @@ function resetPivotalOptions(config: DrawingListenerConfig) {
 	const { inputBoardDrawingConfig, outputBoardDrawingConfig } = config;
 	const {
 		mattingSources: { raw, mask },
-		isMatting,
+		isErasing,
 	} = config;
-	if (isMatting) {
+	if (isErasing) {
 		inputBoardDrawingConfig.mattingSource = raw;
 		outputBoardDrawingConfig.hiddenCtx.value.globalCompositeOperation = GLOBAL_COMPOSITE_OPERATION_DESTINATION_OUT;
 	} else {
@@ -128,7 +128,7 @@ function generateDrawingListener(config: DrawingListenerConfig) {
 		brushDrawingBaseConfig: { step, scaleRatio, positionRange },
 		boardRect: { left, top },
 	} = config;
-	const { inputBoardDrawingConfig, outputBoardDrawingConfig, isMatting } = config;
+	const { inputBoardDrawingConfig, outputBoardDrawingConfig, isErasing } = config;
 	let totalMovement = 0;
 	return (ev: MouseEvent) => {
 		const positionAndMovements = computePositionAndMovements({
@@ -148,7 +148,7 @@ function generateDrawingListener(config: DrawingListenerConfig) {
 			totalMovement = 0;
 			executeMattingDrawing([
 				{ ...commonPointConfig, ...inputBoardDrawingConfig },
-				{ ...commonPointConfig, ...outputBoardDrawingConfig, isMatting },
+				{ ...commonPointConfig, ...outputBoardDrawingConfig, isErasing },
 			]);
 		}
 	};

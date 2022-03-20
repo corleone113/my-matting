@@ -5,7 +5,7 @@ import { ImageSources, MattingProps, UseInitListenersConfig } from '@/types/init
 import { onBeforeUnmount, watch, watchEffect } from 'vue';
 
 export function useInitDrawingListeners(props: MattingProps, config: UseInitListenersConfig) {
-	const { radius, hardness, isMatting } = props;
+	const { radius, hardness, isErasing } = props;
 	const {
 		boardContexts,
 		transformConfig,
@@ -23,7 +23,7 @@ export function useInitDrawingListeners(props: MattingProps, config: UseInitList
 				imageSources: mattingSources.value as ImageSources,
 				boardContexts,
 				initDrawingConfig: { radius, hardness, transformConfig },
-				isMatting: isMatting.value,
+				isErasing: isErasing.value,
 				draggingInputBoard: draggingInputBoard.value,
 				boardRect: boardRect.value as BoardRect,
 			});

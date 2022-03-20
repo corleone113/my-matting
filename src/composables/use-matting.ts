@@ -15,7 +15,7 @@ import { useInitMattingBoards } from './use-init-matting';
 
 export function useMatting() {
 	const picFile = ref<null | File>(null);
-	const isMatting = ref(false);
+	const isErasing = ref(false);
 	const radius = ref(INITIAL_RADIUS);
 	const hardness = ref(INITIAL_HARDNESS);
 	const brushSize = computed(() => radius.value * RADIUS_TO_BRUSH_SIZE_RATIO);
@@ -23,7 +23,7 @@ export function useMatting() {
 
 	return {
 		picFile,
-		isMatting,
+		isErasing,
 		radius,
 		hardness,
 		brushSize,

@@ -44,8 +44,8 @@ function renderMattingInterpolation(interpolationConfig: RenderInterpolationConf
 
 /** 绘制插值轨迹 */
 function drawMattingInterpolationTrack(drawingConfig: MattingDrawingConfig) {
-	const { isMatting, hiddenCtx, drawingCtx } = drawingConfig;
-	if (isMatting) {
+	const { isErasing, hiddenCtx, drawingCtx } = drawingConfig;
+	if (isErasing) {
 		hiddenCtx.value.drawImage(interpolationCtx.canvas, 0, 0);
 	} else {
 		drawMattingTrack(drawingConfig, () => {
@@ -64,9 +64,9 @@ function resetInterpolationCtx(drawingCtx: CanvasRenderingContext2D) {
 
 /** 绘制擦补/抠图区域的圆点 */
 function drawMattingPoint(drawingConfig: MattingDrawingConfig) {
-	const { isMatting, hiddenCtx, drawingCtx } = drawingConfig;
+	const { isErasing, hiddenCtx, drawingCtx } = drawingConfig;
 	const { x, y, radius, hardness } = drawingConfig;
-	if (isMatting) {
+	if (isErasing) {
 		drawBrushPoint({ ctx: hiddenCtx.value, x, y, radius, hardness });
 	} else {
 		drawMattingTrack(drawingConfig, () => {
@@ -87,17 +87,17 @@ function drawMattingTrack(drawingConfig: MattingDrawingConfig, drawingCallback: 
 
 /** 在呈现的画布上绘制图像 */
 function drawResultArea(drawingConfig: MattingDrawingConfig) {
-	const { ctx, hiddenCtx, positionRange, scaleRatio, isMatting } = drawingConfig;
+	const { ctx, hiddenCtx, positionRange, scaleRatio, isErasing } = drawingConfig;
 	transformedDrawImage({
 		ctx: ctx.value as CanvasRenderingContext2D,
 		hiddenCtx: hiddenCtx.value,
 		positionRange,
 		scaleRatio,
-		withBorder: isInResultBoard(isMatting),
+		withBorder: isInResultBoard(isErasing),
 	});
 }
 
 /** 绘制图像的画板是否为输出画板 */
-export function isInResultBoard(isMatting: boolean | undefined) {
-	return isMatting !== undefined;
+export function isInResultBoard(isErasing: boolean | undefined) {
+	return isErasing !== undefined;
 }

@@ -119,7 +119,7 @@ export const ZOOM_OUT_COEFFICIENT = -1;
 /** 缩放比率变化的步长 */
 export const SCALE_STEP = 0.04;
 export const MIN_SCALE_RATIO = 0.15;
-export const MAX_SCALE_RATIO = 4;
+export const MAX_SCALE_RATIO = 10;
 
 /** 使用webp格式进行无损压缩 */
 export const RESULT_IMAGE_MIME_TYPE = 'image/webp';

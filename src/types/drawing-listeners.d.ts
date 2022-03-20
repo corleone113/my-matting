@@ -22,7 +22,7 @@ export interface InitDrawingListenerConfig {
 	/** 初始化绘制的配置 */
 	initDrawingConfig: InitDrawingConfig;
 	/** 是否为擦除画笔 */
-	isMatting: boolean;
+	isErasing: boolean;
 	/** 是否正在拖动左侧输入区画板 */
 	draggingInputBoard: boolean;
 	boardRect: BoardRect;
@@ -66,7 +66,7 @@ export interface DrawingListenerConfig {
 	/** 是否正在拖动左侧输入区画板 */
 	draggingInputBoard: boolean;
 	/** 是否为擦除画笔 */
-	isMatting: boolean;
+	isErasing: boolean;
 }
 
 /** 计算绘制点坐标位置及鼠标指针水平、垂直移动距离的配置对象 */

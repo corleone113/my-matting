@@ -22,10 +22,10 @@ export class MattingCursor {
 	hardness = ref(INITIAL_HARDNESS);
 
 	inputCanvas = computed(() => (this.inputCtx.value as CanvasRenderingContext2D).canvas as HTMLElement);
-	pointInnerColor = computed(() => (this.isMatting.value ? ERASE_POINT_INNER_COLOR : REPAIR_POINT_INNER_COLOR));
-	pointOuterColor = computed(() => (this.isMatting.value ? ERASE_POINT_OUTER_COLOR : REPAIR_POINT_OUTER_COLOR));
+	pointInnerColor = computed(() => (this.isErasing.value ? ERASE_POINT_INNER_COLOR : REPAIR_POINT_INNER_COLOR));
+	pointOuterColor = computed(() => (this.isErasing.value ? ERASE_POINT_OUTER_COLOR : REPAIR_POINT_OUTER_COLOR));
 
-	constructor(private inputCtx: Ref<CanvasRenderingContext2D | null>, private isMatting: Ref<boolean>) {
+	constructor(private inputCtx: Ref<CanvasRenderingContext2D | null>, private isErasing: Ref<boolean>) {
 		this.ctx = this.creatCursorCanvas();
 		this;
 	}
@@ -58,7 +58,7 @@ export class MattingCursor {
 	}
 
 	async drawIcon() {
-		if (this.isMatting.value) {
+		if (this.isErasing.value) {
 			const eraser = await getLoadedImage(iconEraser);
 			this.ctx.drawImage(eraser, 0, 0, this.radius.value * 2, this.radius.value * 2);
 		}
@@ -99,8 +99,8 @@ export class MattingCursor {
 }
 
 export default function useMattingCursor(config: UseCursorConfig) {
-	const { inputCtx, isDragging, isMatting, hardness, radius } = config;
-	const mattingCursor = new MattingCursor(inputCtx, isMatting);
+	const { inputCtx, isDragging, isErasing, hardness, radius } = config;
+	const mattingCursor = new MattingCursor(inputCtx, isErasing);
 	const { cursorImage, mattingCursorStyle, renderOutputCursor } = mattingCursor;
 
 	watchEffect(async () => {

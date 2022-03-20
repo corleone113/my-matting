@@ -160,7 +160,7 @@ export function transformedDrawImage(transformedConfig: TransformedDrawingImageC
 	ctx.restore();
 }
 
-/** 绘制擦补笔刷的单个点 */
+/** 绘制擦补画笔圆点 */
 export function drawBrushPoint(drawingConfig: DrawingCircularConfig) {
 	const { ctx, x, y, radius, hardness } = drawingConfig;
 	const { innerColor = REPAIR_POINT_INNER_COLOR, outerColor = REPAIR_POINT_OUTER_COLOR } = drawingConfig;
