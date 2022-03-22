@@ -23,10 +23,8 @@ const {
 	height,
 	inputCtx,
 	outputCtx,
-	inputHiddenCtx,
 	outputHiddenCtx,
 	draggingInputBoard,
-	transformConfig,
 	initialized,
 	mattingSources
 }
@@ -44,28 +42,9 @@ const cantSave = computed(()=>generating.value || !initialized.value)
 const saveBtnClass = computed(() => ({ 'save-btn': true, 'disabled': cantSave.value }))
 const saveBtnText = computed(() => generating.value ? '保存中...' : '保存')
 
-
-watch([transformConfig], async () => {
-	if (initialized.value) {
-		redraw()
-	}
-})
-
-watch([initialized], async () => {
-	if (initialized.value) {
-		onResizeBoard()
-	}
-})
-
-
 onMounted(() => {
 	initContextsAndSize()
-	window.addEventListener(EventType.Resize, onResizeBoard)
 	renderOutputCursor();
-})
-
-onUnmounted(() => {
-	window.removeEventListener(EventType.Resize, onResizeBoard)
 })
 
 function initContextsAndSize() {
@@ -76,39 +55,6 @@ function initContextsAndSize() {
 	const { clientWidth, clientHeight } = inputCanvas
 	width.value = clientWidth
 	height.value = clientHeight
-}
-
-function onResizeBoard() {
-	requestAnimationFrame(() => {
-		const commonConfig = { targetHeight: height.value, targetWidth: width.value, transformConfig }
-		resizeCanvas({
-			ctx: inputCtx.value as CanvasRenderingContext2D,
-			hiddenCtx: inputHiddenCtx.value,
-			...commonConfig,
-		});
-		resizeCanvas({
-			ctx: outputCtx.value as CanvasRenderingContext2D,
-			hiddenCtx: outputHiddenCtx.value,
-			withBorder: true,
-			...commonConfig,
-		});
-	})
-}
-
-function redraw() {
-	const { positionRange, scaleRatio } = transformConfig;
-	const commonConfig = { positionRange, scaleRatio };
-	transformedDrawImage({
-		ctx: inputCtx.value as CanvasRenderingContext2D,
-		hiddenCtx: inputHiddenCtx.value,
-		...commonConfig,
-	});
-	transformedDrawImage({
-		ctx: outputCtx.value as CanvasRenderingContext2D,
-		hiddenCtx: outputHiddenCtx.value,
-		withBorder: true,
-		...commonConfig,
-	});
 }
 
 function onDownloadResult() {

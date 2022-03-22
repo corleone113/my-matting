@@ -1,3 +1,4 @@
+import { transformedDrawImage } from '@/helpers/dom-helper';
 import { initDrawingListeners } from '@/helpers/init-drawing-listeners';
 import { initDragListener, initScaleListener } from '@/helpers/init-transform-listener';
 import { BoardRect } from '@/types/common';
@@ -58,6 +59,23 @@ export function useInitTransformListener(config: UseInitListenersConfig) {
 		},
 		{ deep: true },
 	);
+	watch([transformConfig], async () => {
+		if (initialized.value) {
+			const { positionRange, scaleRatio } = transformConfig;
+			const commonConfig = { positionRange, scaleRatio };
+			transformedDrawImage({
+				ctx: inputCtx.value as CanvasRenderingContext2D,
+				hiddenCtx: inputHiddenCtx.value,
+				...commonConfig,
+			});
+			transformedDrawImage({
+				ctx: outputCtx.value as CanvasRenderingContext2D,
+				hiddenCtx: outputHiddenCtx.value,
+				withBorder: true,
+				...commonConfig,
+			});
+		}
+	});
 	onBeforeUnmount(() => {
 		if (initialized.value) {
 			listenerManager.removeMouseListeners((outputCtx.value as CanvasRenderingContext2D).canvas);
