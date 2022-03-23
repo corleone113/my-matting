@@ -37,7 +37,9 @@ function updateTransformConfigWhileScaling(ev: WheelEvent, transformConfig: Tran
 	const deltaRatio = transformHelpers.computeDeltaRatio(deltaY);
 	const targetScaleRatio = transformHelpers.computeNewScaleRatio(scaleRatio, deltaRatio);
 	transformConfig.scaleRatio = transformHelpers.computeClampedTargetScaleRatio(targetScaleRatio);
-	transformConfig.positionRange = transformHelpers.computeNewPositionRange(positionRange, { x, y }, deltaRatio);
+	// 不能直接使用deltaRatio，scaleRatio接近最大/最小值时，二者就不相等了。
+	const rangeScaleRatio = computeRangeScaleRatio(transformConfig.scaleRatio, scaleRatio);
+	transformConfig.positionRange = transformHelpers.computeNewPositionRange(positionRange, { x, y }, rangeScaleRatio);
 }
 
 /** 计算鼠标的位置对应的像素在图像中的位置 */
@@ -59,6 +61,11 @@ function isZoomOut(deltaY: number): boolean {
 /** 计算新的缩放比率 */
 function computeNewScaleRatio(scaleRatio: number, deltaRatio: number): number {
 	return scaleRatio + scaleRatio * deltaRatio;
+}
+
+/** 计算绘制范围的变化比率 */
+function computeRangeScaleRatio(newRatio: number, oldRatio: number): number {
+	return (newRatio - oldRatio) / oldRatio;
 }
 
 /** 夹住缩放比例使其不会超出范围 */
