@@ -2,8 +2,8 @@
 import { useMatting, useMattingBoard } from '@/composables/use-matting'
 import useMattingCursor from '@/composables/use-matting-cursor';
 import { RADIUS_SLIDER_MIN, RADIUS_SLIDER_MAX, RADIUS_SLIDER_STEP, HARDNESS_SLIDER_MAX, HARDNESS_SLIDER_STEP, HARDNESS_SLIDER_MIN, EventType } from '@/constants'
-import { watch, ref, onMounted, Ref, onUnmounted, computed } from 'vue'
-import { generateResultImageURL, resizeCanvas, transformedDrawImage } from '@/helpers/dom-helper'
+import { ref, onMounted, Ref, computed } from 'vue'
+import { generateResultImageURL } from '@/helpers/dom-helper'
 
 const inputCvs: Ref<null | HTMLCanvasElement> = ref(null);
 const outputCvs: Ref<null | HTMLCanvasElement> = ref(null);
@@ -33,8 +33,10 @@ const {
 const { cursorImage, mattingCursorStyle, renderOutputCursor } = useMattingCursor({ inputCtx, isDragging: draggingInputBoard, isErasing, radius, hardness });
 const onFileChange = (ev: Event) => {
 	const { files } = (ev.target as HTMLInputElement)
-	if (files && files.length > 0) {
+	if (files && files[0] && /.+\.(jpg|png|gif|webp)/.test(files[0].name)) {
 		picFile.value = files[0]
+	} else {
+		alert('未选择图片或图片格式不正确(只支持jpg、png、gif、webp), 请重新选择')
 	}
 }
 const downloadFileName = computed(() => picFile.value ? `matting_${picFile.value.name}` : 'null')
@@ -74,7 +76,7 @@ function onDownloadResult() {
 	<div class="options-container">
 		<div class="option">
 			<label for="image">选择图片：</label>
-			<input id="image" type="file" @change="onFileChange" />
+			<input id="image" type="file" accept=".jpg,.png,.gif,.webp" @change="onFileChange" />
 		</div>
 		<div class="option">
 			<span>画笔类型：</span>
