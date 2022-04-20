@@ -9,8 +9,6 @@ import {
 	ONE_TURN_DEGREES,
 	REPAIR_POINT_INNER_COLOR,
 	REPAIR_POINT_OUTER_COLOR,
-	RESULT_IMAGE_MIME_TYPE,
-	RESULT_IMAGE_QUALITY,
 	ZERO_DEGREES,
 } from '@/constants';
 import { PositionRange } from '@/types/common';
@@ -175,25 +173,9 @@ export function drawBrushPoint(drawingConfig: DrawingCircularConfig) {
 }
 
 /** 生成结果图像的URL */
-export function generateResultImageURL(
-	rawImage: ImageBitmap,
-	resultCtx: CanvasRenderingContext2D,
-	endCallback: (url: string) => void,
-) {
+export function generateResultImageURL(rawImage: ImageBitmap, resultCtx: CanvasRenderingContext2D) {
 	const resultImageCtx = createResultImageContext2D(rawImage, resultCtx);
-	// return resultImageCtx.canvas.toDataURL(RESULT_IMAGE_MIME_TYPE, RESULT_IMAGE_QUALITY);
-	resultImageCtx.canvas.toBlob(
-		(blob) => {
-			if (blob) {
-				const url = URL.createObjectURL(blob);
-				endCallback(url);
-			} else {
-				throw new Error('生成结果图像失败!');
-			}
-		},
-		RESULT_IMAGE_MIME_TYPE,
-		RESULT_IMAGE_QUALITY,
-	);
+	return resultImageCtx.canvas.toDataURL();
 }
 
 /** 创建绘制了原始尺寸结果图的绘制上下文 */

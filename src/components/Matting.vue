@@ -40,7 +40,7 @@ const onFileChange = (ev: Event) => {
 	}
 }
 const downloadFileName = computed(() => picFile.value ? `matting_${picFile.value.name}` : 'null')
-const cantSave = computed(()=>generating.value || !initialized.value)
+const cantSave = computed(() => generating.value || !initialized.value)
 const saveBtnClass = computed(() => ({ 'save-btn': true, 'disabled': cantSave.value }))
 const saveBtnText = computed(() => generating.value ? '保存中...' : '保存')
 
@@ -62,12 +62,11 @@ function initContextsAndSize() {
 function onDownloadResult() {
 	if (mattingSources.value && !generating.value) {
 		generating.value = true
-		generateResultImageURL(mattingSources.value.orig, outputHiddenCtx.value, (url) => {
-			generating.value = false
-			resultURL.value = url
-			setTimeout(() => {
-				resultLink.value?.click()
-			})
+		const url = generateResultImageURL(mattingSources.value.orig, outputHiddenCtx.value)
+		generating.value = false
+		resultURL.value = url
+		setTimeout(() => {
+			resultLink.value?.click()
 		})
 	}
 }
@@ -87,28 +86,14 @@ function onDownloadResult() {
 		</div>
 		<div class="option">
 			<label for="radius">画笔尺寸：</label>
-			<input
-				id="radius"
-				class="range-input"
-				type="range"
-				v-model="radius"
-				:max="RADIUS_SLIDER_MAX"
-				:min="RADIUS_SLIDER_MIN"
-				:step="RADIUS_SLIDER_STEP"
-			/>
+			<input id="radius" class="range-input" type="range" v-model="radius" :max="RADIUS_SLIDER_MAX"
+				:min="RADIUS_SLIDER_MIN" :step="RADIUS_SLIDER_STEP" />
 			<span>{{ brushSize }}</span>
 		</div>
 		<div class="option">
 			<label for="hardness">画笔硬度：</label>
-			<input
-				id="hardness"
-				class="range-input"
-				type="range"
-				v-model="hardness"
-				:max="HARDNESS_SLIDER_MAX"
-				:min="HARDNESS_SLIDER_MIN"
-				:step="HARDNESS_SLIDER_STEP"
-			/>
+			<input id="hardness" class="range-input" type="range" v-model="hardness" :max="HARDNESS_SLIDER_MAX"
+				:min="HARDNESS_SLIDER_MIN" :step="HARDNESS_SLIDER_STEP" />
 			<span>{{ hardnessText }}</span>
 		</div>
 		<button :class="saveBtnClass" @click="onDownloadResult" :disabled="cantSave">{{ saveBtnText }}</button>
@@ -159,6 +144,7 @@ function onDownloadResult() {
 		}
 	}
 }
+
 .board-container {
 	position: fixed;
 	top: 50px;
@@ -168,6 +154,7 @@ function onDownloadResult() {
 	min-width: 800px;
 	min-height: 600px;
 	display: flex;
+
 	.matting-board,
 	.result-board {
 		flex: 1 50%;
@@ -199,6 +186,7 @@ function onDownloadResult() {
 	.result-board {
 		cursor: grab;
 	}
+
 	.matting-cursor {
 		/** 穿透画笔，触发画布点击事件 */
 		pointer-events: none;

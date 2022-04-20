@@ -120,8 +120,3 @@ export const ZOOM_OUT_COEFFICIENT = -1;
 export const SCALE_STEP = 0.04;
 export const MIN_SCALE_RATIO = 0.15;
 export const MAX_SCALE_RATIO = 10;
-
-/** 使用webp格式进行无损压缩 */
-export const RESULT_IMAGE_MIME_TYPE = 'image/webp';
-/** 质量为1(100%)时图片大小会增大好几倍，设置为0.999时和为1时的图片质量相同但大小要小好几倍 */
-export const RESULT_IMAGE_QUALITY = 0.999;
